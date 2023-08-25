@@ -127,7 +127,10 @@ public class Utils {
     }
     
     /**
-     * 
+     * Metodo para obtener un numero random del 0 al 99
+     * Donde los primeros 10 espacios estan ocupados y donde tambien
+     * valida si hay espacios sufientes para acomodar el programa sino
+     * sigue en el metodo hasta cumplir con el objetivo
      * @param location
      * @return 
      */
