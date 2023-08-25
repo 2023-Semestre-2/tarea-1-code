@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  *
@@ -126,6 +127,30 @@ public class Utils {
     }
     
     /**
+     * 
+     * @param location
+     * @return 
+     */
+    public int getRandomInitial(String location){
+        int countLines = countLines(location);
+
+        int min = 0;
+        int max = 99;
+
+        int number = new Random().nextInt((max - min) + 1) + min;
+        if(number<10){
+            return getRandomInitial(location);
+        }
+
+        int sub = max - number;
+        if(sub<countLines){
+            return getRandomInitial(location);
+        }
+        return number;
+    }
+    
+    
+    /**
      * Metodo que procesa cada linea del archivo asm
      * @param location
      * @return 
@@ -138,6 +163,8 @@ public class Utils {
         registers.put("BX",0 );
         registers.put("CX",0 );
         registers.put("DX",0 );
+        registers.put("PC",0);
+        registers.put("IR",0);
         
         try {
             try (BufferedReader br = new BufferedReader(new FileReader(location))) {
@@ -153,6 +180,10 @@ public class Utils {
                     data.put("BX",Integer.toString(registers.get("BX")));
                     data.put("CX",Integer.toString(registers.get("CX")));
                     data.put("DX",Integer.toString(registers.get("DX")));
+                    data.put("PC", "0");
+                    data.put("IR", data.get("CODE_ASM"));
+                   
+                  
                     result.add(data);
                 }
             }

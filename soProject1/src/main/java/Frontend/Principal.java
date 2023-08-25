@@ -7,6 +7,7 @@ package Frontend;
 import Backend.Utils;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -21,13 +22,17 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Principal extends javax.swing.JFrame {
     List<Map> file = new ArrayList();
+    List<Map> temporal = new ArrayList();
     int cont;
+    int IR = 1;
+    
     /**
      * Creates new form Principal
      */
     public Principal() {
         initComponents();
         this.setLocationRelativeTo(null);
+        
         
         //jTable1.hide();
     }
@@ -123,20 +128,20 @@ public class Principal extends javax.swing.JFrame {
         jTable1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "CODE ASM", "CODE BIN", "AC", "AX", "BX", "CX", "DX"
+                "CODE ASM", "CODE BIN", "AC", "AX", "BX", "CX", "DX", "PC", "IR"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -197,6 +202,7 @@ public class Principal extends javax.swing.JFrame {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File archive = fileChooser.getSelectedFile();
                 file = new Utils().result(archive.getPath());
+                
                 nextInstruction();
                 //ShowData(new Utils().result(archive.getPath()));  
             }
@@ -207,28 +213,55 @@ public class Principal extends javax.swing.JFrame {
     
     
     public void nextInstruction() {
-        ShowData();
-        cont++;
+        //agregar if para verificar el tamano de file primero, exception si cont es > a file.size 
+        if (IR%2 !=0) {
+            temporal.add(file.get(cont));
+            if(temporal.size()>=cont) {
+                ShowData(temporal);
+                cont++;
+            }
+            
+        }
+        else {
+            Map<String, String> processing = new HashMap<>();
+            Map<String, String> actual = temporal.get(temporal.size()-1);
+            processing.put("CODE_ASM", "---");
+            processing.put("CODE_BINARY", "---");
+            processing.put("AC",actual.get("AC"));
+            processing.put("AX",actual.get("AX"));
+            processing.put("BX",actual.get("BX"));
+            processing.put("CX",actual.get("CX"));
+            processing.put("DX",actual.get("DX"));
+            processing.put("PC", "0");
+            processing.put("IR", actual.get("IR"));
+            temporal.add(processing);
+            
+            ShowData(temporal);
+        }
+        System.out.println(temporal);
+        IR++;
     }
-    //public void ShowData(List<Map> file)
-    public void ShowData()
+    public void ShowData(List<Map> file)
     {
         //Revisar aqui
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+       DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
 
-        String[] cols = {"CODE ASM","CODE BIN","AC","AX","BX","CX","DX"};
+        String[] cols = {"CODE ASM","CODE BIN","AC","AX","BX","CX","DX", "PC", "IR"};
         String[][] data = new String[file.size()][cols.length];
 
-        //for(int i = 0; i < file.size(); i++){
-            Map obj = file.get(cont);
-            data[cont][0] = obj.get("CODE_ASM").toString();
-            data[cont][1] = obj.get("CODE_BINARY").toString();
-            data[cont][2] = obj.get("AC").toString();
-            data[cont][3] = obj.get("AX").toString();
-            data[cont][4] = obj.get("BX").toString();
-            data[cont][5] = obj.get("CX").toString();
-            data[cont][6] = obj.get("DX").toString();     
-        //}
+        for(int i = 0; i < file.size(); i++){
+            Map obj = file.get(i);
+            data[i][0] = obj.get("CODE_ASM").toString();
+            data[i][1] = obj.get("CODE_BINARY").toString();
+            data[i][2] = obj.get("AC").toString();
+            data[i][3] = obj.get("AX").toString();
+            data[i][4] = obj.get("BX").toString();
+            data[i][5] = obj.get("CX").toString();
+            data[i][6] = obj.get("DX").toString();
+            data[i][7] = "0";
+            data[i][8] = obj.get("IR").toString();
+            
+        }
         model.setDataVector(data, cols);
     }
     
