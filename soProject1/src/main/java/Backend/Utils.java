@@ -145,7 +145,6 @@ public class Utils {
                 while ((line = br.readLine()) != null) {
                     Map<String, String> data = new HashMap<>();
                     getRegistersData(line,registers);
-                    
                     data.put("CODE_ASM", line);
                     data.put("CODE_BINARY", getBinaryCode(line));
                     
