@@ -152,6 +152,129 @@ public class Utils {
         return number;
     }
     
+    /**
+     * Metodo para reconocer si el codigo es valido
+     * Si resultado es mayor a 0 es pq contiene errores
+     * @param location
+     * @return 
+     */
+    public int isCodeASM(String location){
+        int count = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(location))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String criteria= " ";
+            String [] strarr = line.split(criteria);
+    
+            switch (strarr.length) {
+                case 3:  
+                    int countOp = countNotOperator(strarr[0]);
+                    int countReg = countNotRegisterWithComma(strarr[1]);
+                    int num = countNotNumeric(strarr[2]);
+                    
+                    count = count + countOp +  countReg + num;
+                    
+                    break;
+
+                case 2:
+                    int countOp1 = countNotOperator(strarr[0]);
+                    int countReg1 = countNotRegister(strarr[1]);
+                    
+                    count =  count +  countOp1 +  countReg1;
+                    break;
+                default:
+                    count++;
+                }
+            }
+        }catch (IOException e) {
+           count++;
+        }
+        return count;
+    }
+    
+    
+    /**
+     * Metodo para contar si no es operador
+     * Utilizado en el funcion de reconocer codigo
+     * @param location
+     * @return 
+     */
+    private int countNotOperator(String operator){
+        int count = 0;
+        if(!operator.equalsIgnoreCase("LOAD") && !operator.equalsIgnoreCase("STORE")
+        && !operator.equalsIgnoreCase("MOV") && !operator.equalsIgnoreCase("SUB")
+        && !operator.equalsIgnoreCase("ADD")){
+            count = count +1;
+        }     
+        return count;
+    }
+    
+    /**
+     * Metodo para contar si no es un numero
+     * Utilizado en el funcion de reconocer codigo
+     * @param location
+     * @return 
+     */
+    private int countNotNumeric(String numeric){
+        int count = 0;
+        if(!isNumeric(numeric)){
+            count = count +1;
+        }    
+        return count;
+    }
+    
+    
+    /**
+     * Metodo para contar si no es un registro y si trae coma
+     * Utilizado en el funcion de reconocer codigo
+     * @param location
+     * @return 
+     */
+    private int countNotRegisterWithComma(String register){
+        int count = 0;
+        if(!register.contains(",")){
+            count = count +1;
+        }else{
+            String [] strarr = register.split(",");
+            if(!strarr[0].equalsIgnoreCase("AX") && !strarr[0].equalsIgnoreCase("BX")
+            && !strarr[0].equalsIgnoreCase("CX") && !strarr[0].equalsIgnoreCase("DX")){
+                count = count +1;
+            }
+        }    
+        return count;
+    }
+ 
+    
+    /**
+     * Metodo para contar si no es un registro y si no trae coma
+     * Utilizado en el funcion de reconocer codigo
+     * @param location
+     * @return 
+     */
+    private int countNotRegister(String register){  
+        int count = 0;
+        if(!register.equalsIgnoreCase("AX") && !register.equalsIgnoreCase("BX")
+        && !register.equalsIgnoreCase("CX") && !register.equalsIgnoreCase("DX")){
+            count = count +1;
+        }     
+        return count;
+    }
+ 
+    /**
+     * Metodo para validar si es numerico
+     * Utilizado en el funcion de reconocer codigo
+     * @param location
+     * @return 
+     */
+    private boolean isNumeric(String cadena){
+	try {
+            Integer.parseInt(cadena);
+            return true;
+	} catch (NumberFormatException nfe){
+            return false;
+	}
+    }
+    
     
     /**
      * Metodo que procesa cada linea del archivo asm
