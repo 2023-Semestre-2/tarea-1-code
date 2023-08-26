@@ -26,19 +26,7 @@ public class SoProject1 {
         presentarLogo();
         Principal p = new Principal();
         p.show();
-        //selectArchive();
-        
-        //Utils u = new Utils();
-        //System.out.println(u.countLines("C:\\Users\\Caili\\OneDrive\\Escritorio\\SO\\soProject1\\src\\main\\java\\Examples\\example1.asm"));
-        
-        //System.out.println(u.result("C:\\Users\\Caili\\OneDrive\\Escritorio\\SO\\soProject1\\src\\main\\java\\Examples\\example1.asm"));
-        
-        //System.out.println(p.convertRegisterToJson());
-        //System.out.println(u.convertDecimalToBinary(99));
-        //System.out.println(u.convertDecimalToBinary(-99));
-        //System.out.println(u.convertDecimalToBinary(5));
-        //System.out.println(u.convertDecimalToBinary(0));
-        //System.out.println(u.convertDecimalToBinary(-8));
+       
          
     }
     

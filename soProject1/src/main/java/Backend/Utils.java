@@ -308,8 +308,6 @@ public class Utils {
                     data.put("DX",Integer.toString(registers.get("DX")));
                     data.put("PC", "0");
                     data.put("IR", data.get("CODE_ASM"));
-                   
-                  
                     result.add(data);
                 }
             }

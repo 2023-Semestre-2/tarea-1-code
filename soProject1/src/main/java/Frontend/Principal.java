@@ -24,7 +24,7 @@ public class Principal extends javax.swing.JFrame {
     List<Map> file = new ArrayList();
     List<Map> temporal = new ArrayList();
     int cont;
-    int IR = 1;
+    int IR = 0;
     
     /**
      * Creates new form Principal
@@ -201,9 +201,26 @@ public class Principal extends javax.swing.JFrame {
             int result = fileChooser.showOpenDialog(null);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File archive = fileChooser.getSelectedFile();
-                file = new Utils().result(archive.getPath());
+                Utils model = new Utils();
+                if (model.isCodeASM(archive.getPath()) == 0) {
+                    file = model.result(archive.getPath());
+                    Map<String, String> firstRow = new HashMap<>();
+                    firstRow.put("CODE_ASM", file.get(0).get("CODE_ASM").toString());
+                    firstRow.put("CODE_BINARY", file.get(0).get("CODE_BINARY").toString());
+                    firstRow.put("AC","0");
+                    firstRow.put("AX","0");
+                    firstRow.put("BX","0");
+                    firstRow.put("CX","0");
+                    firstRow.put("DX","0");
+                    firstRow.put("PC", "0");
+                    firstRow.put("IR", file.get(0).get("IR").toString());
+                    temporal.add(firstRow);
+                    ShowData(temporal);
+                }
+                else {
+                    System.out.println("no");
+                }
                 
-                nextInstruction();
                 //ShowData(new Utils().result(archive.getPath()));  
             }
         } catch (Exception ex) {
@@ -213,37 +230,37 @@ public class Principal extends javax.swing.JFrame {
     
     
     public void nextInstruction() {
-        //agregar if para verificar el tamano de file primero, exception si cont es > a file.size 
-        if (IR%2 !=0) {
-            temporal.add(file.get(cont));
-            if(temporal.size()>=cont) {
-                ShowData(temporal);
-                cont++;
-            }
-            
-        }
-        else {
-            Map<String, String> processing = new HashMap<>();
-            Map<String, String> actual = temporal.get(temporal.size()-1);
+        Map<String, String> processing = new HashMap<>();
+        if (IR%2 == 0) {
             processing.put("CODE_ASM", "---");
             processing.put("CODE_BINARY", "---");
-            processing.put("AC",actual.get("AC"));
-            processing.put("AX",actual.get("AX"));
-            processing.put("BX",actual.get("BX"));
-            processing.put("CX",actual.get("CX"));
-            processing.put("DX",actual.get("DX"));
-            processing.put("PC", "0");
-            processing.put("IR", actual.get("IR"));
-            temporal.add(processing);
-            
-            ShowData(temporal);
+            processing.put("AC",file.get(cont).get("AC").toString());
+            processing.put("AX",file.get(cont).get("AX").toString());
+            processing.put("BX",file.get(cont).get("BX").toString());
+            processing.put("CX",file.get(cont).get("CX").toString());
+            processing.put("DX",file.get(cont).get("DX").toString());
+            processing.put("PC", file.get(cont).get("PC").toString());
+            processing.put("IR", file.get(cont).get("IR").toString());
+            cont++;
         }
-        System.out.println(temporal);
+        else {
+            processing.put("CODE_ASM", file.get(cont).get("CODE_ASM").toString());
+            processing.put("CODE_BINARY", file.get(cont).get("CODE_BINARY").toString());
+            processing.put("AC",file.get(cont-1).get("AC").toString());
+            processing.put("AX",file.get(cont-1).get("AX").toString());
+            processing.put("BX",file.get(cont-1).get("BX").toString());
+            processing.put("CX",file.get(cont-1).get("CX").toString());
+            processing.put("DX",file.get(cont-1).get("DX").toString());
+            processing.put("PC", file.get(cont-1).get("PC").toString());
+            processing.put("IR", file.get(cont-1).get("IR").toString());
+        }
         IR++;
+        temporal.add(processing);
+        ShowData(temporal);
+        
     }
     public void ShowData(List<Map> file)
     {
-        //Revisar aqui
        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
 
         String[] cols = {"CODE ASM","CODE BIN","AC","AX","BX","CX","DX", "PC", "IR"};
