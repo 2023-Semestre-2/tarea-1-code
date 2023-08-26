@@ -291,13 +291,14 @@ public class Utils {
         registers.put("DX",0 );
         registers.put("PC",0);
         registers.put("IR",0);
-        
+        int locMemory = getRandomInitial(location);
         try {
             try (BufferedReader br = new BufferedReader(new FileReader(location))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     Map<String, String> data = new HashMap<>();
                     getRegistersData(line,registers);
+                    data.put("MEMORY",String.valueOf(locMemory));
                     data.put("CODE_ASM", line);
                     data.put("CODE_BINARY", getBinaryCode(line));
                     
@@ -309,6 +310,8 @@ public class Utils {
                     data.put("PC", "0");
                     data.put("IR", data.get("CODE_ASM"));
                     result.add(data);
+                    //System.out.println(result);
+                    locMemory++;
                 }
             }
         } catch (IOException e) {

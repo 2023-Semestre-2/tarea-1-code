@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
@@ -32,9 +34,7 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
         this.setLocationRelativeTo(null);
-        
-        
-        //jTable1.hide();
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -53,12 +53,14 @@ public class Principal extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setMinimumSize(new java.awt.Dimension(679, 389));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
 
         jPanel2.setBackground(new java.awt.Color(0, 51, 51));
 
@@ -125,16 +127,13 @@ public class Principal extends javax.swing.JFrame {
 
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTable1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTable1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "CODE ASM", "CODE BIN", "AC", "AX", "BX", "CX", "DX", "PC", "IR"
+                "STATE", "CODE BIN", "AC", "AX", "BX", "CX", "DX", "PC", "IR"
             }
         ) {
             Class[] types = new Class [] {
@@ -152,7 +151,38 @@ public class Principal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setGridColor(new java.awt.Color(51, 51, 51));
+        jTable1.setShowGrid(true);
         jScrollPane1.setViewportView(jTable1);
+
+        jTable2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "MEMORY", "CODE_ASM"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable2.setGridColor(new java.awt.Color(51, 51, 51));
+        jTable2.setSelectionBackground(new java.awt.Color(0, 255, 255));
+        jTable2.setShowGrid(true);
+        jScrollPane2.setViewportView(jTable2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -161,13 +191,15 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 778, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 735, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 585, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+            .addComponent(jScrollPane2)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -183,7 +215,10 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * 
+     * @param evt 
+     */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             // TODO add your handling code here:
@@ -205,6 +240,8 @@ public class Principal extends javax.swing.JFrame {
                 if (model.isCodeASM(archive.getPath()) == 0) {
                     file = model.result(archive.getPath());
                     Map<String, String> firstRow = new HashMap<>();
+                    firstRow.put("STATE", "FETCHING");
+                    firstRow.put("MEMORY", file.get(0).get("MEMORY").toString());
                     firstRow.put("CODE_ASM", file.get(0).get("CODE_ASM").toString());
                     firstRow.put("CODE_BINARY", file.get(0).get("CODE_BINARY").toString());
                     firstRow.put("AC","0");
@@ -212,13 +249,15 @@ public class Principal extends javax.swing.JFrame {
                     firstRow.put("BX","0");
                     firstRow.put("CX","0");
                     firstRow.put("DX","0");
-                    firstRow.put("PC", "0");
-                    firstRow.put("IR", file.get(0).get("IR").toString());
+                    firstRow.put("PC", file.get(0).get("MEMORY").toString());
+                    firstRow.put("IR", file.get(0).get("CODE_BINARY").toString());
                     temporal.add(firstRow);
+                    ShowMemory();
                     ShowData(temporal);
                 }
                 else {
-                    System.out.println("no");
+                    String message = "ERROR DE SINTAXIS [DOCUMENTO INVALIDO]";
+                    JOptionPane.showMessageDialog(new JFrame(), message, "Dialog",JOptionPane.ERROR_MESSAGE);
                 }
                 
                 //ShowData(new Utils().result(archive.getPath()));  
@@ -228,10 +267,14 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     
-    
+    /**
+     * 
+     */
     public void nextInstruction() {
         Map<String, String> processing = new HashMap<>();
         if (IR%2 == 0) {
+            processing.put("STATE", "EXECUTING");
+            processing.put("MEMORY",file.get(cont).get("MEMORY").toString());
             processing.put("CODE_ASM", "---");
             processing.put("CODE_BINARY", "---");
             processing.put("AC",file.get(cont).get("AC").toString());
@@ -239,11 +282,19 @@ public class Principal extends javax.swing.JFrame {
             processing.put("BX",file.get(cont).get("BX").toString());
             processing.put("CX",file.get(cont).get("CX").toString());
             processing.put("DX",file.get(cont).get("DX").toString());
-            processing.put("PC", file.get(cont).get("PC").toString());
-            processing.put("IR", file.get(cont).get("IR").toString());
+            if (cont+1<=file.size()-1) {
+                processing.put("PC", file.get(cont+1).get("MEMORY").toString());
+            }
+            else {
+                processing.put("PC", file.get(cont).get("MEMORY").toString());
+            }
+            
+            processing.put("IR", file.get(cont).get("CODE_BINARY").toString());
             cont++;
         }
         else {
+            processing.put("STATE", "FETCHING");
+            processing.put("MEMORY",file.get(cont).get("MEMORY").toString());
             processing.put("CODE_ASM", file.get(cont).get("CODE_ASM").toString());
             processing.put("CODE_BINARY", file.get(cont).get("CODE_BINARY").toString());
             processing.put("AC",file.get(cont-1).get("AC").toString());
@@ -251,43 +302,76 @@ public class Principal extends javax.swing.JFrame {
             processing.put("BX",file.get(cont-1).get("BX").toString());
             processing.put("CX",file.get(cont-1).get("CX").toString());
             processing.put("DX",file.get(cont-1).get("DX").toString());
-            processing.put("PC", file.get(cont-1).get("PC").toString());
-            processing.put("IR", file.get(cont-1).get("IR").toString());
+            processing.put("PC", file.get(cont).get("MEMORY").toString());
+            processing.put("IR", file.get(cont).get("CODE_BINARY").toString());
         }
         IR++;
         temporal.add(processing);
         ShowData(temporal);
         
     }
+    
+    /**
+     * 
+     */
+    public void ShowMemory() {
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        String[] cols = {"MEMORY","CODE ASM"};
+        String[][] data = new String[file.size()][cols.length];
+        for(int i = 0; i < file.size(); i++){
+            Map obj = file.get(i);
+            data[i][0] = obj.get("MEMORY").toString();
+            data[i][1] = obj.get("CODE_ASM").toString();
+        }
+        model.setDataVector(data, cols);
+    }
+    
+    /**
+     * 
+     * @param file 
+     */
     public void ShowData(List<Map> file)
     {
        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
 
-        String[] cols = {"CODE ASM","CODE BIN","AC","AX","BX","CX","DX", "PC", "IR"};
+        String[] cols = {"STATE","CODE BIN","AC","AX","BX","CX","DX", "PC", "IR"};
         String[][] data = new String[file.size()][cols.length];
 
         for(int i = 0; i < file.size(); i++){
             Map obj = file.get(i);
-            data[i][0] = obj.get("CODE_ASM").toString();
+            data[i][0] = obj.get("STATE").toString();
             data[i][1] = obj.get("CODE_BINARY").toString();
             data[i][2] = obj.get("AC").toString();
             data[i][3] = obj.get("AX").toString();
             data[i][4] = obj.get("BX").toString();
             data[i][5] = obj.get("CX").toString();
             data[i][6] = obj.get("DX").toString();
-            data[i][7] = "0";
+            data[i][7] = obj.get("PC").toString();
             data[i][8] = obj.get("IR").toString();
             
         }
         model.setDataVector(data, cols);
     }
     
+    /**
+     * 
+     * @param evt 
+     */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         jTable1.clearSelection();
         jTable1.setModel(new DefaultTableModel());
+        jTable2.clearSelection();
+        jTable2.setModel(new DefaultTableModel());
+        cont = 0;
+        IR = 0;
+        file = new ArrayList();
+        temporal = new ArrayList();
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    /**
+     * 
+     * @param evt 
+     */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         nextInstruction();
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -334,6 +418,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }
