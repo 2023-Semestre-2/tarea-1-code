@@ -257,7 +257,7 @@ public class Principal extends javax.swing.JFrame {
                 }
                 else {
                     String message = "ERROR DE SINTAXIS [DOCUMENTO INVALIDO]";
-                    JOptionPane.showMessageDialog(new JFrame(), message, "Dialog",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(new JFrame(), message, "ERROR",JOptionPane.ERROR_MESSAGE);
                 }
                 
                 //ShowData(new Utils().result(archive.getPath()));  
@@ -271,43 +271,49 @@ public class Principal extends javax.swing.JFrame {
      * 
      */
     public void nextInstruction() {
-        Map<String, String> processing = new HashMap<>();
-        if (IR%2 == 0) {
-            processing.put("STATE", "EXECUTING");
-            processing.put("MEMORY",file.get(cont).get("MEMORY").toString());
-            processing.put("CODE_ASM", "---");
-            processing.put("CODE_BINARY", "---");
-            processing.put("AC",file.get(cont).get("AC").toString());
-            processing.put("AX",file.get(cont).get("AX").toString());
-            processing.put("BX",file.get(cont).get("BX").toString());
-            processing.put("CX",file.get(cont).get("CX").toString());
-            processing.put("DX",file.get(cont).get("DX").toString());
-            if (cont+1<=file.size()-1) {
-                processing.put("PC", file.get(cont+1).get("MEMORY").toString());
+        if (cont<= file.size()-1) {
+            Map<String, String> processing = new HashMap<>();
+            if (IR%2 == 0) {
+                processing.put("STATE", "EXECUTING");
+                processing.put("MEMORY",file.get(cont).get("MEMORY").toString());
+                processing.put("CODE_ASM", "---");
+                processing.put("CODE_BINARY", "---");
+                processing.put("AC",file.get(cont).get("AC").toString());
+                processing.put("AX",file.get(cont).get("AX").toString());
+                processing.put("BX",file.get(cont).get("BX").toString());
+                processing.put("CX",file.get(cont).get("CX").toString());
+                processing.put("DX",file.get(cont).get("DX").toString());
+                if (cont+1<=file.size()-1) {
+                    processing.put("PC", file.get(cont+1).get("MEMORY").toString());
+                }
+                else {
+                    processing.put("PC", file.get(cont).get("MEMORY").toString());
+                }
+
+                processing.put("IR", file.get(cont).get("CODE_BINARY").toString());
+                cont++;
             }
             else {
+                processing.put("STATE", "FETCHING");
+                processing.put("MEMORY",file.get(cont).get("MEMORY").toString());
+                processing.put("CODE_ASM", file.get(cont).get("CODE_ASM").toString());
+                processing.put("CODE_BINARY", file.get(cont).get("CODE_BINARY").toString());
+                processing.put("AC",file.get(cont-1).get("AC").toString());
+                processing.put("AX",file.get(cont-1).get("AX").toString());
+                processing.put("BX",file.get(cont-1).get("BX").toString());
+                processing.put("CX",file.get(cont-1).get("CX").toString());
+                processing.put("DX",file.get(cont-1).get("DX").toString());
                 processing.put("PC", file.get(cont).get("MEMORY").toString());
+                processing.put("IR", file.get(cont).get("CODE_BINARY").toString());
             }
-            
-            processing.put("IR", file.get(cont).get("CODE_BINARY").toString());
-            cont++;
+            IR++;
+            temporal.add(processing);
+            ShowData(temporal);
         }
         else {
-            processing.put("STATE", "FETCHING");
-            processing.put("MEMORY",file.get(cont).get("MEMORY").toString());
-            processing.put("CODE_ASM", file.get(cont).get("CODE_ASM").toString());
-            processing.put("CODE_BINARY", file.get(cont).get("CODE_BINARY").toString());
-            processing.put("AC",file.get(cont-1).get("AC").toString());
-            processing.put("AX",file.get(cont-1).get("AX").toString());
-            processing.put("BX",file.get(cont-1).get("BX").toString());
-            processing.put("CX",file.get(cont-1).get("CX").toString());
-            processing.put("DX",file.get(cont-1).get("DX").toString());
-            processing.put("PC", file.get(cont).get("MEMORY").toString());
-            processing.put("IR", file.get(cont).get("CODE_BINARY").toString());
+            String message = "FIN DEL PROGRAMA";
+            JOptionPane.showMessageDialog(new JFrame(), message, "WARNING",JOptionPane.ERROR_MESSAGE);
         }
-        IR++;
-        temporal.add(processing);
-        ShowData(temporal);
         
     }
     
